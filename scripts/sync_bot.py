@@ -11,7 +11,7 @@ from functools import partial
 from multiprocessing import Process, Value, Queue
 from threading import Thread
 
-from sutils import SyncDiffusionWorker
+from sync_utils import SyncDiffusionWorker
 
 import discord
 from discord.ext import commands, tasks
