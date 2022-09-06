@@ -11,11 +11,10 @@ from functools import partial
 from multiprocessing import Process, Value, Queue
 from threading import Thread
 
-
+from sutils import SyncDiffusionWorker
 
 import discord
 from discord.ext import commands, tasks
-from sutils import SyncDiffusionWorker
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -135,12 +134,13 @@ class SyncDiffusionCog(commands.Cog):
         await self.bot_loop.start()
 
 
-    @discord.app_commands.command(name="stop")
-    async def stop_dream(self, interaction: discord.Interaction):
+    @discord.app_commands.command(name="cancel")
+    async def cancel_dream(self, interaction: discord.Interaction):
         try:
-            print(f'bot: stop_dream')
-            self.message_queue.clear()
-            await interaction.response.send_message(content=f"Stop Dream!")
+            print(f'bot: cancel_dream')
+            while not self.dream_queue.empty():
+                self.dream_queue.get()
+            await interaction.response.send_message(content=f"Cancel Dreaming!")
         except Exception as e:
             await discord.interaction.response.send_message(content=str(e))
             raise
