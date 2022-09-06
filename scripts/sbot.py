@@ -126,20 +126,32 @@ class SyncDiffusionCog(commands.Cog):
         self.jobs = dict()
 
     async def setup_hook(self) -> None:
-        print(f'Cog: setup_hook(self)')
+        print(f'bot: setup_hook(self)')
         # create the background task and run it in the background
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f'Cog: on_ready')
+        print(f'bot: on_ready')
         await self.bot_loop.start()
+
+
+    @discord.app_commands.command(name="stop")
+    async def stop_dream(self, interaction: discord.Interaction):
+        try:
+            print(f'bot: stop_dream')
+            self.message_queue.clear()
+            await interaction.response.send_message(content=f"Stop Dream!")
+        except Exception as e:
+            await discord.interaction.response.send_message(content=str(e))
+            raise
+
 
     @discord.app_commands.command(name="dream")
     async def recieve_dream(self, interaction: discord.Interaction, prompt: str, seed: int = None, itr: int = 1, ar: str = '1:1', 
         basesize: int = 512, ddim_steps: int = 25, cfg_scale: float = 7.5, sampler_name: str = 'k_lms', matrix: bool = False, normalize: bool = True, 
         gfpgan: bool = True, realesrgan: bool = False, realesrgan_anime:bool = False):
         try: 
-            print(f'dream: Recieve Dream / dream_queue: {self.dream_queue.qsize()}')
+            print(f'bot: recieve_dream() / dream_queue: {self.dream_queue.qsize()}')
 
             ddim_eta = 0.0
             n_iter = 1
